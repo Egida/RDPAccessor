@@ -220,7 +220,6 @@ namespace localhost
 
             var processStartInfo = new ProcessStartInfo()
             {
-                Verb = "runas",
                 FileName = "cmd",
                 UseShellExecute = false,
                 CreateNoWindow = true,
