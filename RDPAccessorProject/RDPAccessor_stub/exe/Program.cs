@@ -140,7 +140,13 @@ namespace localhost
                 {
                     foreach (var process in processes)
                     {
-                        process.Kill();
+                        try {
+                            
+                            process.Kill();
+                        }
+                        catch {
+                            // 
+                        }
                     }
 
                     return true;
