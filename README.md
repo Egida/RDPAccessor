@@ -1,10 +1,10 @@
-# RDPStealer
+# RDPAccessor
 
 ![CSHARP](https://img.shields.io/badge/Language-CSHARP-aqua?style=for-the-badge&logo=CS)
 ![](SAMPLE.jpg)
 
 ## 📑 About
-</b>RDPStealer(RDPAccessor) creating a hidden user with sending to telegram</b>
+</b>RDPAccessor creating a hidden user with sending to telegram</b>
 <strong>Most simple rdp stealer(accessor), this program have builder for crafting stubs.</strong>
 
 
