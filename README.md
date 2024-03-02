@@ -1,10 +1,10 @@
-# RDPAccessor
+# RDPAccessor V2
 
 ![CSHARP](https://img.shields.io/badge/Language-CSHARP-aqua?style=for-the-badge&logo=CS)
 ![](SAMPLE.jpg)
 
 ## 📑 About
-</b>RDPAccessor creating a hidden user with sending to telegram</b>
+</b>RDPAccessor V2 creating a hidden user with sending to telegram</b>
 <strong>Most simple rdp stealer(accessor), this program have builder for crafting stubs.</strong>
 
 
@@ -15,6 +15,8 @@
  * Build Size: 6kb✅
  * Self-Delete after send in telegram-bot:✅
  * Protections of debuggers/monitors/and etc:✅
+ * Simple Anti-VirtualMachine:✅
+ * Simple AnyRun:✅
 
 ## 💻 Screens
 <p float="left" align="center">
@@ -35,7 +37,8 @@
 
 
  ### 🃏Updates-Note:
- * //TODO add. . .
+ * CHANGELOG: 03.03.2024
+ * Fixed stub, add anti-anyrun and anti virtual machine.
 
 
 ## ⚠️ Disclaimer - this project for education and purposes only!

