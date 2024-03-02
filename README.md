@@ -5,7 +5,7 @@
 
 ## 📑 About
 </b>RDPAccessor V2 creating a hidden user with sending to telegram</b>
-<strong>Most simple rdp stealer(accessor), this program have builder for crafting stubs.</strong>
+<strong><b>Most simple rdp stealer(accessor), this program have builder for crafting stubs.</strong>
 
 
 
