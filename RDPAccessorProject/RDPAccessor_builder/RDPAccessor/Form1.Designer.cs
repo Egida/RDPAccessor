@@ -211,7 +211,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(114, 19);
             this.label1.TabIndex = 6;
-            this.label1.Text = "RDPAccessor V2";
+            this.label1.Text = "RDPAccessor V3";
             // 
             // buildBtn
             // 
@@ -222,9 +222,9 @@
             this.buildBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buildBtn.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buildBtn.ForeColor = System.Drawing.Color.White;
-            this.buildBtn.Location = new System.Drawing.Point(100, 271);
+            this.buildBtn.Location = new System.Drawing.Point(88, 271);
             this.buildBtn.Name = "buildBtn";
-            this.buildBtn.Size = new System.Drawing.Size(112, 35);
+            this.buildBtn.Size = new System.Drawing.Size(129, 35);
             this.buildBtn.TabIndex = 0;
             this.buildBtn.Text = "BUILD";
             this.buildBtn.UseVisualStyleBackColor = false;

