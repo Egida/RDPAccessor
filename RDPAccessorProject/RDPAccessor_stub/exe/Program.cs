@@ -180,8 +180,8 @@ namespace localhost
             string[] vmProcesses = {
         "vmtoolsd", "vmwaretray", "vmwareuser", "vgauthservice", "vmacthlp",
         "vmsrvc", "vmusrvc", "prl_cc", "prl_tools", "xenservice", "qemu-ga", "joeboxcontrol",
-        "ksdumperclient", "ksdumper", "joeboxserver", "vmwareservice", "vmwaretray", "VBoxsService",
-        "VBoxsTray",
+        "ksdumperclient", "ksdumper", "joeboxserver", "vmwareservice", "vmwaretray", "VBoxService",
+        "VBoxTray",
     };
 
             var processes = Process.GetProcesses();
